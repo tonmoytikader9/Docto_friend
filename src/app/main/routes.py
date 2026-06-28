@@ -151,7 +151,7 @@ print(f"ROUTE LOG:: Current week = {CURRENT_WEEK}, Upcoming week = {UPCOMING_WEE
 
 @bp.route("/", methods=["GET"])
 def doctor_login_page():
-    # medicine_database_management.append_medicine_record() // TODO use once to ingest med list
+    medicine_database_management.append_medicine_record() # TODO use once to ingest med list
     return render_template("doctor_login.html")
 
 @bp.route("/doctor-login", methods=["POST"])
