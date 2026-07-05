@@ -27,6 +27,51 @@
       justify-content:center;
       padding:24px;
     }
+
+
+    .password-container{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.password-container input{
+    flex: 1;
+    padding: 12px 14px;
+    margin-top: 0;                 /* overrides your existing input margin */
+}
+
+.toggle-password{
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(0,0,0,0.09);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: var(--input-shadow);
+
+    cursor: pointer;
+    color: #6b7280;
+    transition: all .2s ease;
+}
+
+.toggle-password:hover{
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.toggle-password svg{
+    width:20px;
+    height:20px;
+}
+
+
     .wrap{
       width:100%;
       max-width:920px;
@@ -137,11 +182,90 @@
         <div class="muted-small">Include country code (e.g., +1). Digits only, 7–15 characters.</div>
 
         <label for="password">Password</label>
-        <input id="password" name="password" type="password" placeholder="Create a password" required>
-        <div class="muted-small">Min 8 chars, include a number and a letter.</div>
 
-        <label for="confirm">Confirm password</label>
-        <input id="confirm" name="confirm" type="password" placeholder="Repeat password" required>
+<div class="password-container">
+
+    <input
+        id="password"
+        name="password"
+        type="password"
+        placeholder="Create a password"
+        required>
+
+    <button
+        type="button"
+        class="toggle-password"
+        data-target="password">
+
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="20"
+             height="20"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round">
+
+            <path class="eye-outline" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/>
+            <circle class="eye-pupil" cx="12" cy="12" r="3"/>
+            <line class="eye-slash"
+                  x1="3"
+                  y1="3"
+                  x2="21"
+                  y2="21"
+                  style="display:none;" />
+
+        </svg>
+
+    </button>
+
+</div>
+
+<div class="muted-small">
+    Min 8 chars, include a number and a letter.
+</div>
+
+       <label for="confirm">Confirm password</label>
+
+<div class="password-container">
+
+    <input
+        id="confirm"
+        name="confirm"
+        type="password"
+        placeholder="Repeat password"
+        required>
+
+    <button
+        type="button"
+        class="toggle-password"
+        data-target="confirm">
+
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="20"
+             height="20"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round">
+
+            <path class="eye-outline" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/>
+            <circle class="eye-pupil" cx="12" cy="12" r="3"/>
+            <line class="eye-slash"
+                  x1="3"
+                  y1="3"
+                  x2="21"
+                  y2="21"
+                  style="display:none;" />
+
+        </svg>
+
+    </button>
+
+</div>
 
         <div class="row" style="margin-top:14px;">
           <label class="checkbox"><input type="checkbox" id="terms" required> I agree to the <a class="link" href="#">terms</a></label>
@@ -218,6 +342,26 @@
         showError('Network error — try again later');
       }
     });
+
+    document.querySelectorAll(".toggle-password").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const input = document.getElementById(button.dataset.target);
+
+        const slash = button.querySelector(".eye-slash");
+
+        if (input.type === "password") {
+            input.type = "text";
+            slash.style.display = "block";
+        } else {
+            input.type = "password";
+            slash.style.display = "none";
+        }
+
+    });
+
+});
   </script>
 </body>
 </html>

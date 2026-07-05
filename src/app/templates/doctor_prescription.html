@@ -24,13 +24,13 @@
 
   /* Container sized to A4 minus margins */
   .container {
-    box-sizing: border-box;
-    width: calc(210mm - 20mm); /* A4 width minus left+right margin */
-    min-height: calc(297mm - 20mm); /* A4 height minus top+bottom margin */
-    margin: 0;
-    padding: 0; /* document padding inside page */
-    background: #fff;
-  }
+        width: 190mm;
+        height: 277mm;     /* fixed page height */
+        box-sizing: border-box;
+
+        display: flex;
+        flex-direction: column;
+    }  
 
   /* Ensure no browser shrinks content for print */
   body * { -webkit-print-color-adjust: exact; }
@@ -38,8 +38,6 @@
   /* Force page-breaks if needed */
   .page-break { page-break-after: always; break-after: page; }
 
-  /* Avoid overflow creating extra white bands; allow internal scrolling to be visible in print */
-  .container { overflow: visible; }
 
   /* Print-specific tweaks: hide interactive UI */
   @media print {
@@ -54,18 +52,31 @@
 
     html,body{height:100%;margin:0;background:var(--bg);}
     .row { box-sizing:border-box; padding:14px 18px; background:linear-gradient(#fff,#fff); }
-    .row.header{ height:18%; display:flex; align-items:flex-start; gap:18px; border-bottom:2px solid #000000; margin-top: 3% !important;}
-    .row.patient{
-        /* keep existing spacing/visuals */
-        height:auto;               /* allow content to define height when stacked */
+    
+    .row.header{
         display:flex;
-        flex-direction:row;     /* stack children vertically */
-        justify-content:flex-start;
-        gap:10px;                  /* space between the two lines */
-        align-items:stretch;       /* make children full-width */
-        padding:12px 18px;
-        border-bottom:2px solid #000000;
-        box-sizing:border-box;
+        align-items:flex-start;
+        gap:18px;
+        margin-top:12px;
+        flex-shrink:0;
+    }
+
+    .row.patient{
+        display:flex;
+        flex-direction:row;
+        gap:10px;
+        flex-shrink:0;
+    }
+
+    .patient-left{
+        flex:0 0 48%;
+        margin-left:20px;                       
+        padding-right:18px;
+    }
+
+    .patient-right{
+        flex:1;
+        padding-left:18px;
     }
 
     /* ensure the inner lines use full width and keep their internal layout */
@@ -86,8 +97,44 @@
         white-space: nowrap;
     }
     
-    .row.body{ height:80%; padding:0; display:block; border-bottom:2px solid #000000; }
-    .row.footer{ height: auto; padding:0; display:flex; gap:12px; align-items:center; }
+    .row.body{
+        flex:1;
+        display:flex;
+        min-height:0;
+        overflow:hidden;
+    }
+
+  
+    .row.footer{
+        display:grid;
+        grid-template-columns:20% 80%;
+        height:150px;
+    }
+
+    .row.header,
+    .row.patient,
+    .row.body,
+    .row.footer{
+        padding-left:18px;
+        padding-right:18px;
+    }
+
+    .row.header,
+    .row.patient,
+    .row.body {
+        position: relative;
+    }
+
+    .row.header::after,
+    .row.patient::after,
+    .row.body::after {
+        content: "";
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        bottom: 0;
+        border-bottom: 2px solid #000;
+    }
 
     .header-left{ flex:0 0 48%; display:flex; gap:12px; align-items:flex-start; }
     .header-left .avatar{
@@ -110,33 +157,53 @@
     .patient-grid{ display:flex; gap:18px; width:100%; align-items:center; justify-content:space-between; flex-wrap:nowrap; }
     .patient-item{ display:flex; gap:8px; align-items:center; font-size:13px; color:var(--muted); }
     .patient-item strong{ color:#111; font-weight:600; font-size:14px; }
-    .patient-right{ flex:0 0 260px; font-size:13px; color:var(--muted); text-align:right; }
 
     /* Body grid */
     .body-grid{
-      height:100%;
-      display:grid;
-      grid-template-columns:20% 80%;
-      grid-template-rows:25% 75%;
-      gap:0;
-      align-items:stretch;
+        flex:1;
+
+        display:grid;
+
+        grid-template-columns:20% 80%;
+        grid-template-rows:auto 1fr;
+
+        min-height:0;
     }
+
     .col-left { padding:14px; border-right:2px solid #000000;; box-sizing:border-box; }
     .col-right { padding:14px; box-sizing:border-box; }
 
     .upper-left{ grid-column:1 / 2; grid-row:1 / 2; flex-direction:column; gap:8px; font-size:13px; color:var(--muted); border-bottom:1px solid #111;}
     .upper-right{ grid-column:2 / 3; grid-row:1 / 2; display:flex; align-items:center; padding-left:18px; font-size:14px; font-weight:600; color:#111; border-bottom:1px solid #111; }
-    .lower-left{ grid-column:1 / 2; grid-row:2 / 3; overflow:auto; padding:14px; font-size:13px; color:var(--muted); }
+    .lower-left{
+        display:flex;
+        flex-direction:column;
+
+        min-height:0;
+    }
+
+    #investigations{
+        flex:1;
+        margin:0;
+    }
     /* make lower-right layout responsive and prevent overflow */
     .lower-right{
-    grid-column: 2 / 3;
-    grid-row: 2 / 3;
-    overflow: visible;              /* avoid scrollbars */
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 14px;
-    box-sizing: border-box;
+        grid-column:2 / 3;
+        grid-row:2 / 3;
+
+        display:flex;
+        flex-direction:column;
+
+        padding:14px;
+
+        gap:10px;
+
+        min-height:0;
+    }
+
+
+    #med-body{
+        height:100%;
     }
 
     /* clamp font-size to available height/width using CSS container queries where supported,
@@ -159,6 +226,9 @@
     /* 2) Fallback: auto-scale text when children would overflow horizontally.
     Wrap content blocks inside .auto-scale (apply to direct children if needed). */
     .lower-right > * { min-width: 0; } /* allow children to shrink */
+    .lower-right table{
+        flex-grow:1;
+    }
     .auto-scale {
     display: block;
     width: 100%;
@@ -182,13 +252,51 @@
     .lower-right { gap: 8px; padding: 10px; }
     }
 
-    table.rx{ width:100%; border-collapse:collapse; font-size:12px; }
+    table.rx{
+        width:100%;
+        border-collapse:collapse;
+        font-size:12px;
+
+    }
     table.rx th, table.rx td{ padding:10px 8px; border-bottom:1px solid var(--inner-border); text-align:left; vertical-align:top; }
     table.rx th{ background:#fafbfc; color:var(--muted); font-weight:700; font-size:11px; }
+    .footer-left{
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        border-right:2px solid #000;
+    }
 
-    .footer-left{ flex:0 0 140px; display:flex; align-items:center; justify-content:center; border-right:1px solid #000000; padding-right:18px; }
-    .qr{ width:120px; height:120px; background:#f3f3f3; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:12px; border-radius:6px; border:1px solid var(--inner-border); }
-    .footer-right{ flex:1; font-size:13px; color:var(--muted); display:flex; flex-direction:column; gap:6px; padding-left:18px; }
+    .footer-right{
+        display:flex;
+        flex-direction:column;
+        padding:14px;
+    }
+
+    .qr{
+        width:120px;
+        height:120px;
+        overflow:hidden;
+
+        background:#f3f3f3;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+
+        color:var(--muted);
+        font-size:12px;
+
+        border-radius:6px;
+        border:1px solid var(--inner-border);
+    }
+
+    .qr img{
+        width:100%;
+        height:100%;
+        object-fit:contain;
+        display:block;
+    }
+    
     .sign{ margin-top:auto; text-align:right; font-weight:700; color:#111; }
     .diagnosis{ font-size:13px; color:var(--muted); }
 
@@ -212,7 +320,7 @@
         font-size:11px;              /* reduced font size */
         line-height:1.1;             /* tighter lines */
         max-height:92px;             /* limit vertical space to footer */
-        overflow:auto;               /* scroll if more than fits */
+        overflow:hidden;               /* scroll if more than fits */
         padding-right:6px;           /* room for scrollbar */
     }
     #other-clinics li { margin:3px 0; }
@@ -225,8 +333,8 @@
 <body>
   <div class="container" role="document" aria-label="Prescription">
     <!-- Row 1: Header (doctor left, clinic right) -->
-    <div style="padding: 0px 18px;">
-        <div class="row header" role="banner" aria-label="Header (doctor and clinic)" id="row-header">
+    
+    <div class="row header" role="banner" aria-label="Header (doctor and clinic)" id="row-header">
         <div class="header-left" aria-label="Doctor details"> 
             <div class="avatar" id="doctor-avatar"><img src="{{ clinic_data.clinic_picture}}" alt="Logo" onerror="this.onerror=null; this.src='{{url_for('static', filename='image/Prescription_footer.jpg') }}';" style="width:56px;height:56px;border-radius:10px;object-fit:cover;"></div>
             <div class="doc-info">
@@ -248,32 +356,31 @@
             <div style="margin-top:6px;color:var(--muted);font-size:13px;"><span id="presc-date">{{visit_schedule}}</span></div>
             <p id="clinic-timings" style="margin-top:6px;color:var(--muted);font-size:13px;"><strong>Prescription Date: </strong>{{prescription_date}}</p>
         </div>
-        </div>
     </div>
+    
     <!-- Row 2: Patient details (two rows) -->
-     <div style="padding: 0px 18px;">
-        <div class="row patient" role="region" aria-label="Patient details" id="row-patient">
-            <!-- First line: Name | Age/Sex | Date -->
-            <div class="patient-line">
-                <div class="patient-field"><strong>Name: </strong> <span id="patient-name">{{patient_data.patient_name}}</span></div>
-                <div class="patient-field"><strong>Age / Sex: </strong> <span id="patient-age-sex">{{patient_data.age}} / {{patient_data.sex}}</span></div>
-                <div class="patient-field" ><strong>Occupation: </strong><span id="patient-occupation">{{patient_data.occupation}}</span></div>
-                <div class="patient-field"><strong>Mobile: </strong><span id="patient-occupation">{{patient_data.patient_mobile}}</span></div>
-            </div>
-
-            <!-- Second line: Address | Occupation | Vitals (BP, Weight, Temp, RR, SpO2) -->
-            <div class="patient-line" >
-                <div class="patient-field" ><strong>Address: </strong><span id="patient-address">{{patient_data.patient_address}}</span></div>
-                <div class="patient-field"><strong>Weight: </strong> <div id="patient-weight">{{patient_data.patient_weight}} kg</div>, <strong>Temp: </strong> <div id="v-temp">{{patient_data.patient_temp}}°C </div></div>
-                <div class="patient-field"><strong>BP: </strong> <div id="patient-bp">{{patient_data.patient_BP}} mmHg</div>, <strong>Pulse: </strong> <div id="patient-weight">{{patient_data.patient_pulse}} /min</div></div>
-            </div>
+    <div class="row patient" role="region" aria-label="Patient details" id="row-patient">
+        <!-- First line: Name | Age/Sex | Date -->
+        <div class="patient-left">
+            <div class="patient-field"><strong>Name: </strong> <span id="patient-name">{{patient_data.patient_name}}</span></div>
+            <div class="patient-field"><strong>Age / Sex: </strong> <span id="patient-age-sex">{{patient_data.age}} / {{patient_data.sex}}</span></div>
+            <div class="patient-field" ><strong>Occupation: </strong><span id="patient-occupation">{{patient_data.occupation}}</span></div>
+            <div class="patient-field"><strong>Mobile: </strong><span id="patient-occupation">{{patient_data.patient_mobile}}</span></div>
         </div>
+
+        <!-- Second line: Address | Occupation | Vitals (BP, Weight, Temp, RR, SpO2) -->
+        <div class="patient-right" >
+            <div class="patient-field" ><strong>Address: </strong><span id="patient-address">{{patient_data.patient_address}}</span></div>
+            <div class="patient-field"><strong>Weight: </strong> <div id="patient-weight">{{patient_data.patient_weight}} kg</div>, <strong>Temp: </strong> <div id="v-temp">{{patient_data.patient_temp}}°C </div></div>
+            <div class="patient-field"><strong>BP: </strong> <div id="patient-bp">{{patient_data.patient_BP}} mmHg</div>, <strong>Pulse: </strong> <div id="patient-weight">{{patient_data.patient_pulse}} /min</div></div>
+        </div>
+
     </div>
+   
 
     <!-- Row 3: Main body with 2 columns x 2 rows -->
-     <div style="padding: 0px 18px;">
-        <div class="row body" role="main" aria-label="Prescription body" id="row-body">
-        <div class="body-grid" role="grid" style="height:100%;" id="body-grid">
+    <div class="row body" role="main" aria-label="Prescription body" id="row-body">
+        <div class="body-grid" role="grid" id="body-grid">
             <!-- upper-left -->
             <div class="upper-left col-left" aria-label="Short notes / flags">
             <div><strong>Visit Reason:</strong> <span id="visit-reason">{{patient_data.patient_CO}}</span></div>
@@ -282,7 +389,7 @@
 
             <!-- upper-right -->
             <div class="upper-right col-right" aria-label="Quick summary">
-            <div id="provisional-diagnosis" style="font-size:16px;">Provisional Diagnosis: {{patient_data.patient_OE}}</div>
+            <div id="provisional-diagnosis" style="font-size:16px;">On Examination Diagnosis: {{patient_data.patient_OE}}</div>
             </div>
 
             <!-- lower-left -->
@@ -314,7 +421,7 @@
                 </tr>
                 </thead>
                 <tbody id="med-body">
-                     {% if patient_data.medications %}
+                        {% if patient_data.medications %}
                         {% for med in patient_data.medications %}
                         <tr>
                             <td>{{ med.medicine }}<br>
@@ -338,34 +445,39 @@
             </div>
             </div>
         </div>
-        </div>
     </div>
+
     <!-- Row 4: Footer with QR on left and info on right -->
-     <div style="padding: 12px 18px;">
-        <div class="row footer" role="contentinfo" aria-label="Footer" id="row-footer">
-        <div class="footer-left" aria-label="QR code">
-            <div class="qr" id="qr-demo" aria-hidden="true"><img src="{{ doctor_data.doctor_qr_uri }}" alt="QR"></div>
-        </div>
-        <div class="footer-right" aria-label="Footer information">
-
-            <div aria-label="Other clinics" style="margin-top:8px;">
-            <strong style="font-size:12px;">Scan QR Code to visit my website .</strong></br>
-            <strong style="font-size:12px;">Clinics Affiliations:</strong>
-            <ul id="other-clinics">
-                {% for c in doctor_affiliation %}
-                <li>
-                    <span style="font-weight:600;color:#111;">{{ c.clinic_name }}</span>
-                    {% if c.address %} — <span style="color:var(--muted);">{{ c.address }}</span>{% endif %}
-                </li>
-                {% endfor %}
-            </ul>
-            </div>
-
-
-            <div class="sign" id="footer-sign">Dr. {{doctor_data.firstname}} {{doctor_data.lastname}} — Regd No: {{doctor_data.license}}</div>
-        </div>
-        </div>
+    <div class="row footer" role="contentinfo" aria-label="Footer" id="row-footer">
+    <div class="footer-left" aria-label="QR code">
+        <div class="qr" id="qr-demo">
+<img
+    src="{{ doctor_data.doctor_qr_uri }}"
+    alt="QR"
+    width="120"
+    height="120">
+</div>
     </div>
+    <div class="footer-right" aria-label="Footer information">
+
+        <div aria-label="Other clinics" style="margin-top:8px;">
+        <strong style="font-size:12px;">Scan QR Code to visit my website .</strong></br>
+        <strong style="font-size:12px;">Clinics Affiliations:</strong>
+        <ul id="other-clinics">
+            {% for c in doctor_affiliation %}
+            <li>
+                <span style="font-weight:600;color:#111;">{{ c.clinic_name }}</span>
+                {% if c.address %} — <span style="color:var(--muted);">{{ c.address }}</span>{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        </div>
+
+
+        <div class="sign" id="footer-sign">Dr. {{doctor_data.firstname}} {{doctor_data.lastname}} — Regd No: {{doctor_data.license}}</div>
+    </div>
+    </div>
+    
   </div>
 
 </body>

@@ -27,6 +27,61 @@
       justify-content:center;
       padding:24px;
     }
+
+
+
+
+
+    .password-container{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.password-container input{
+    flex: 1;
+    padding: 12px 14px;
+    border: 1px solid rgba(0,0,0,0.09);
+    border-radius: 8px;
+    box-shadow: var(--input-shadow);
+    font-size: 15px;
+    background: #fff;
+}
+
+.toggle-password{
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(0,0,0,0.09);
+    border-radius: 8px;
+
+    background: #fff;
+    box-shadow: var(--input-shadow);
+
+    cursor: pointer;
+    color: #6b7280;
+
+    transition: all 0.2s ease;
+}
+
+.toggle-password:hover{
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.toggle-password svg{
+    width: 20px;
+    height: 20px;
+}
+
+
+
     .wrap{
       width:100%;
       max-width:920px;
@@ -138,7 +193,34 @@
         <input id="identifier" name="identifier" type="text" placeholder="you@hospital.com or LICENSE123" required>
 
         <label for="password">Password</label>
-        <input id="password" name="password" type="password" placeholder="Enter your password" required>
+
+<div class="password-container">
+    <input
+        id="password"
+        name="password"
+        type="password"
+        placeholder="Enter your password"
+        required
+    >
+
+    <button
+        type="button"
+        class="toggle-password"
+        id="togglePassword"
+        aria-label="Show password">
+
+        <!-- Your eye SVG here -->
+        <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg"
+             width="20" height="20" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/>
+            <circle cx="12" cy="12" r="3"/>
+        </svg>
+
+    </button>
+</div>
 
         <div class="row">
           <label class="remember"><input type="checkbox" id="remember"> Remember me</label>
@@ -153,6 +235,27 @@
   </div>
 
   <script>
+const passwordInput = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+const eyeOpen = document.getElementById("eyeOpen");
+const eyeClosed = document.getElementById("eyeClosed");
+
+togglePassword.addEventListener("click", () => {
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        eyeOpen.style.display = "none";
+        eyeClosed.style.display = "block";
+        togglePassword.setAttribute("aria-label", "Hide password");
+    } else {
+        passwordInput.type = "password";
+        eyeOpen.style.display = "block";
+        eyeClosed.style.display = "none";
+        togglePassword.setAttribute("aria-label", "Show password");
+    }
+
+});
+
   document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const identifier = document.getElementById('identifier').value.trim();

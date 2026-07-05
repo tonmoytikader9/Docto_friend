@@ -13,7 +13,8 @@
     }
     html,body{height:100%;margin:0;background:#f5f6f8;}
     /* Container sized to half A4 height, full A4 width when printed in portrait */
-    .receipt {
+
+    .container {
       width:210mm;
       height:148.5mm; /* A4 half height */
       max-width:100%;
@@ -92,7 +93,7 @@
   </style>
 </head>
 <body>
-  <div class="receipt" role="document" aria-label="Money Receipt">
+  <div class="container" role="document" aria-label="Money Receipt">
     <div class="header" role="banner">
       <div class="hdr-left">
         <div><strong>Patient ID:</strong> <span id="patient-id">{{data.patient_id}}</span></div>
@@ -131,5 +132,6 @@
       <button class="no-print" onclick="window.print()" style="padding:8px 12px;border-radius:6px;border:0;background:var(--brand);color:#fff;cursor:pointer;">Print</button>
     </div>
   </div>
+
 </body>
 </html>

@@ -55,6 +55,12 @@
     pre{ background:#f6f6f8; padding:12px; border-radius:8px; overflow:auto; font-size:13px; }
   </style>
   <style>
+
+    input[name="rx_duration"]{
+    display:none;
+}
+
+
   .modal { position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; }
   .modal-backdrop { position:absolute; inset:0; background:rgba(0,0,0,0.6); }
   .modal-content { position:relative; width:100%; max-width:1200px; height:100%; max-height:92vh; margin:auto; display:flex; flex-direction:column; background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3); }
@@ -193,7 +199,7 @@
 
         </div>
 
-
+        <!-- Rx -->
         <div class="full">
           <label for="rxTable">Rx (Medication)</label>
 
@@ -219,11 +225,13 @@
 
         </div>
 
+        <!-- Follow up -->
         <div>
           <label for="patient_follow_up">Follow-up-time</label>
           <input id="patient_follow_up" name="patient_follow_up" type="text" placeholder="Follow up in 7 days...">
         </div>
 
+        <!-- Advice -->
         <div>
           <label for="patient_advice">Advice</label>
           <input id="patient_advice" name="patient_advice" type="text" placeholder="Advice to patients...">
@@ -331,8 +339,6 @@
     });
   }
 
-
-
   // RxModule: standalone manager for the Rx table (add/remove/seed/getData)
   const RxModule = (function(){
     const rxTbody = document.getElementById('rxTbody');
@@ -399,8 +405,84 @@
       tdReg.appendChild(makeSelect('rx_regime', regimes, data.regime));
 
       // Duration cell
-      const tdDur = document.createElement('td'); tdDur.style.padding = '8px';
-      tdDur.appendChild(makeInput('rx_duration', 'e.g. After meal for 5 days', data.duration || ''));
+      const tdDur = document.createElement('td');
+      tdDur.style.padding = '8px';
+
+      const wrapper = document.createElement('div');
+      wrapper.style.display = 'flex';
+      wrapper.style.alignItems = 'center';
+      wrapper.style.gap = '4px';
+      wrapper.style.flexWrap = 'nowrap';
+      wrapper.style.whiteSpace = 'nowrap';
+
+      // Hidden field (existing backend uses this)
+      const durationInput = makeInput(
+          'rx_duration',
+          '',
+          data.duration || ''
+      );
+      durationInput.style.display = 'none';
+
+      // Meal dropdown
+      const mealSelect = document.createElement('select');
+      mealSelect.style.width = '72px';
+      mealSelect.style.minWidth = '72px';
+      mealSelect.style.padding = '4px';
+      mealSelect.style.fontSize = '13px';
+      mealSelect.style.borderRadius = '6px';
+      mealSelect.style.border = '1px solid rgba(6,42,138,0.08)';
+
+      mealSelect.innerHTML = `
+          <option value="">--</option>
+          <option value="Before meal">Before</option>
+          <option value="After meal">After</option>
+      `;
+
+      // Days input
+      const daysInput = document.createElement('input');
+      daysInput.type = 'number';
+      daysInput.min = '1';
+      daysInput.placeholder = '0';
+      daysInput.style.width = '48px';
+      daysInput.style.padding = '4px';
+      daysInput.style.fontSize = '13px';
+      daysInput.style.borderRadius = '6px';
+      daysInput.style.border = '1px solid rgba(6,42,138,0.08)';
+
+      // "days" label
+      const daysLabel = document.createElement('span');
+      daysLabel.textContent = 'days';
+      daysLabel.style.fontSize = '13px';
+
+      function updateDuration() {
+          if (mealSelect.value && daysInput.value) {
+              durationInput.value =
+                  `${mealSelect.value} for ${daysInput.value} day${daysInput.value == 1 ? '' : 's'}`;
+          } else {
+              durationInput.value = '';
+          }
+      }
+
+      // Restore values when editing
+      if (data.duration) {
+          const match = data.duration.match(/(Before meal|After meal)\s+for\s+(\d+)/i);
+          if (match) {
+              mealSelect.value = match[1];
+              daysInput.value = match[2];
+          }
+      }
+
+      mealSelect.addEventListener('change', updateDuration);
+      daysInput.addEventListener('input', updateDuration);
+
+      wrapper.appendChild(mealSelect);
+      wrapper.appendChild(daysInput);
+      wrapper.appendChild(daysLabel);
+      wrapper.appendChild(durationInput);
+
+      tdDur.appendChild(wrapper);
+      // Duration cell end
+
 
       // Actions
       const tdAct = document.createElement('td'); tdAct.style.padding = '8px'; tdAct.style.width = '90px';
@@ -449,7 +531,6 @@
       }
       return rows;
     }
-
 
     // wire add button if present
     if (addRxRowBtn) {
@@ -656,7 +737,7 @@
 </script>
 
 <script>
-async function captureAndPrintFillHeight({ targetSelector = '#modalHtmlContainer .container', dpi = 300 } = {}) {
+/*async function captureAndPrintFillHeight({ targetSelector = '#modalHtmlContainer .container', dpi = 300 } = {}) {
   try {
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
     const target = document.querySelector(targetSelector) || document.querySelector('.container') || document.body;
@@ -684,10 +765,9 @@ async function captureAndPrintFillHeight({ targetSelector = '#modalHtmlContainer
     const srcW = canvas.width;
     const srcH = canvas.height;
 
-    // Desired scale so that image height exactly matches A4 height
-    const scaleByHeight = A4_H_PX / srcH;
-    const scaledW = Math.round(srcW * scaleByHeight);
-    const scaledH = A4_H_PX; // by design
+    const scale = A4_W_PX / srcW;
+    const scaledW = A4_W_PX;
+    const scaledH = Math.round(srcH * scale);
 
     // Create an intermediate canvas with the scaled full image (may be wider than A4)
     const scaledCanvas = document.createElement('canvas');
@@ -741,21 +821,154 @@ async function captureAndPrintFillHeight({ targetSelector = '#modalHtmlContainer
     console.error('captureAndPrintFillHeight error', err);
     alert('Failed to capture/print: ' + (err.message || err));
   }
+}*/
+
+function printPrescription() {
+
+    const html =
+        document.getElementById("modalHtmlContainer").innerHTML;
+
+    const w = window.open("", "_blank");
+
+    w.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<style>
+
+@page{
+    size:A4;
+    margin:10mm;
 }
 
-document.getElementById('printBtn').addEventListener('click', function(){
-  captureAndPrintFillHeight({ targetSelector: '#modalHtmlContainer .container', dpi: 300 });
+body{
+    margin:0;
+    padding:0;
+}
+
+</style>
+
+</head>
+
+<body>
+
+${html}
+
+<script>
+
+window.onload=function(){
+
+    window.print();
+
+};
+
+<\/script>
+
+</body>
+
+</html>
+`);
+
+    w.document.close();
+
+}
+
+async function printReceipt() {
+
+    if(document.fonts)
+        await document.fonts.ready;
+
+    const receipt =
+        document.querySelector('#modalHtmlContainer .receipt');
+
+    const canvas = await html2canvas(receipt,{
+        scale:3,
+        backgroundColor:"#ffffff",
+        useCORS:true
+    });
+
+    const img = canvas.toDataURL("image/png");
+
+    const w = window.open("","_blank");
+
+    w.document.write(`
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<style>
+
+@page{
+    size:A5 landscape;
+    margin:0;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+}
+
+img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<img src="${img}">
+
+<script>
+
+window.onload=function(){
+
+    window.print();
+
+};
+
+<\/script>
+
+</body>
+
+</html>
+`);
+
+    w.document.close();
+
+}
+
+
+document.getElementById("printBtn").addEventListener("click",function(){
+
+    const receipt =
+        document.querySelector("#modalHtmlContainer .receipt");
+
+    if(receipt){
+
+        printReceipt();
+
+    }
+    else{
+
+        printPrescription();
+
+    }
+
 });
 
 </script>
 
-<!-- Add this inside your page -->
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
 <script>
 // Coach: implementation
 function injectReceiptHtml(container, data) {
-  const html = `<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><style>
+  const html = `<style>
     :root{--brand:#0a5f8a;--muted:#555;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:#111}
     html,body{height:100%;margin:0;background:#f5f6f8}
     .receipt{width:210mm;height:148.5mm;max-width:100%;margin:10mm auto;background:#fff;box-sizing:border-box;padding:12mm;border-radius:4px;box-shadow:0 6px 18px rgba(20,20,20,0.06)}
@@ -765,8 +978,11 @@ function injectReceiptHtml(container, data) {
     .body{font-size:15px;line-height:1.6;color:#111;margin-bottom:20px}.body .amount{font-weight:700}
     .footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto}.doc{text-align:right;font-size:13px}
     .sig-line{display:block;width:220px;height:1px;background:#ccc;margin-bottom:6px;margin-left:auto}.small{font-size:12px;color:var(--muted)}
-    @media (max-width:480px){.receipt{padding:12px;width:100%;height:auto;margin:8px}.sig-line{width:160px}}
-  </style></head><body>
+    @media (max-width:480px){.receipt{padding:12px;width:100%;height:auto;margin:8px}.sig-line{width:160px}}.container{
+    max-width:900px;
+    margin:0 auto;
+}
+  </style>
   <div class="receipt" role="document" aria-label="Money Receipt">
     <div class="header" role="banner">
       <div class="hdr-left"><div><strong>Patient ID:</strong> <span id="patient-id">${escapeHtml(data.patient_id)}</span></div></div>
@@ -792,8 +1008,8 @@ function injectReceiptHtml(container, data) {
         <div style="margin-top:4px;">Regd No: <strong id="license">${escapeHtml(data.doctor_license)}</strong></div>
       </div>
     </div>
-  </div>
-  </body></html>`;
+  </div> 
+  `;
   container.innerHTML = html;
 }
 
@@ -801,55 +1017,16 @@ function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&am
 
 // Main: render to canvas and print
 async function generateMoneyReceipt(data) {
-  window.openHtmlModal('');
 
-  const modalContainer = document.getElementById('modalHtmlContainer');
-  injectReceiptHtml(modalContainer, data);  
+    window.openHtmlModal('');
 
-  // Give browser a tick to render fonts/styles
-  await new Promise(r => setTimeout(r, 250));
+    const modalContainer =
+        document.getElementById('modalHtmlContainer');
 
-  // find the receipt element inside container
-  const receiptEl = modalContainer.querySelector('.receipt');
-  if (!receiptEl) { console.error('Receipt element not found'); return; }
+    injectReceiptHtml(modalContainer, data);
 
-  // Use html2canvas to rasterize. Increase scale for better print DPI.
-  const scale = Math.min(2, window.devicePixelRatio || 1);
-  const canvas = await html2canvas(receiptEl, {
-    backgroundColor: null,
-    scale,
-    useCORS: true,
-    logging: false,
-    scrollY: -window.scrollY // ensures stable capture
-  });
+    await new Promise(r=>setTimeout(r,250));
 
-  // Open a new window/tab and write the image for printing
-  const imgData = canvas.toDataURL('image/png');
-  const printWindow = window.open('', '_blank');
-  if (!printWindow) {
-    // fallback: open an inline print frame
-    const w = window.open();
-    w.document.write(`<html><head><title>Print</title></head><body style="margin:0"><img src="${imgData}" style="width:100%;height:auto;"/></body></html>`);
-    w.document.close();
-    w.focus();
-    setTimeout(() => w.print(), 300);
-    return;
-  }
-  printWindow.document.write(`
-    <html>
-      <head>
-        <title>Print Receipt</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1"/>
-        <style>html,body{margin:0;padding:0;} img{width:100%;height:auto;display:block;} @media print{img{width:210mm}} </style>
-      </head>
-      <body>
-        <img src="${imgData}" alt="Receipt"/>
-      </body>
-    </html>`);
-  printWindow.document.close();
-  printWindow.focus();
-  // wait for image load then print
-  printWindow.onload = () => { setTimeout(() => printWindow.print(), 250); };
 }
 
 // Starter: hook button
@@ -877,10 +1054,6 @@ document.getElementById('moneyReceiptFormBtn').addEventListener('click', () => {
 
 
 </script>
-
-
-
-
 
 </body>
 </html>

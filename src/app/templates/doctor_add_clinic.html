@@ -263,7 +263,7 @@
 
             <script>
             (function(){
-              const startHour = 8, endHour = 20; // 08:00..20:00
+              const startHour = 0, endHour = 23; // 08:00..20:00
               const pad = n => String(n).padStart(2,'0');
               function timeLabel(h){ return `${(h%12===0?12:h%12)}:00 ${h<12?'AM':'PM'}`; }
               function isoTime(h){ return `${pad(h)}:00`; }

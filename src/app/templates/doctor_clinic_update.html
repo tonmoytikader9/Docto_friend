@@ -171,10 +171,10 @@
 (function(){
   function pad(n){ return n.toString().padStart(2,'0'); }
 
-  const times = [];
-  for(let h=8; h<20; h++){
-    times.push(pad(h)+':00');
-  }
+ const times = [];
+for (let h = 0; h <= 23; h++) {
+  times.push(`${pad(h)}:00`);
+}
 
   const startSel = document.getElementById('sched_start');
   const endSel = document.getElementById('sched_end');
