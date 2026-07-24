@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Clinic Placard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+
+    --primary:#c62828;
+    --primaryDark:#8e0000;
+    --accent:#e53935;
+    --bg:#fff5f5;
+    --text:#2f2f2f;
+    --muted:#666;
+    --border:#f0c9c9;
+
+}
+
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+}
+
+@page{
+
+    size:A4 portrait;
+    margin:8mm;
+
+}
+
+body{
+
+    margin:0;
+
+    padding:8mm;
+
+    background:#ececec;
+
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+
+    display:flex;
+
+    justify-content:center;
+
+}
+
+.placard{
+
+    position:relative;
+
+    width:100%;
+
+    max-width:190mm;
+
+    background:white;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    border:1px solid #d7d7d7;
+
+    box-shadow:0 6px 20px rgba(0,0,0,.08);
+
+}
+
+.top-strip,
+.bottom-strip{
+
+    height:0px;
+
+    border-top:10px solid #8e0000;
+
+}
+
+
+
+/*==============================*/
+/* HEADER */
+/*==============================*/
+
+.header{
+
+    background:white;
+
+    color:black;
+    text-align:center;
+
+    padding:18px;
+
+}
+
+.logo{
+
+    width:58px;
+
+    height:58px;
+
+    border-radius:12px;
+
+    object-fit:cover;
+
+    margin-bottom:10px;
+
+    border:2px solid rgba(255,255,255,.35);
+
+    background:white;
+
+}
+
+.header h1{
+
+    font-size:32px;
+
+    font-weight:800;
+
+    letter-spacing:.5px;
+
+    margin-bottom:6px;
+
+}
+
+.header h2{
+
+    font-size:18px;
+
+    font-weight:500;
+
+    margin-bottom:5px;
+
+}
+
+.header h3{
+
+    font-size:22px;
+
+    font-weight:600;
+
+    color:black;
+
+}
+
+/*==============================*/
+
+.section{
+
+    padding:18px 24px;
+
+    border-bottom:1px solid var(--border);
+
+}
+
+.section-title{
+
+    color:var(--primaryDark);
+
+    font-size:24px;
+
+    font-weight:700;
+
+    margin-bottom:14px;
+
+}
+
+.address{
+
+    white-space:pre-line;
+
+    font-size:16px;
+
+    line-height:1.6;
+
+    color:var(--text);
+
+}
+
+.contact{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+    margin-top:16px;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    color:var(--text);
+
+}
+
+/*==============================*/
+/* Schedule */
+/*==============================*/
+
+.schedule div{
+
+    background:#fff5f5;
+
+    padding:10px 14px;
+
+    border-left:5px solid var(--primary);
+
+    border-radius:8px;
+
+    font-size:16px;
+
+    color:var(--text);
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    letter-spacing:0.5px;
+
+}
+
+.schedule{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+.schedule div{
+
+    background:#fff5f5;
+
+    padding:10px 14px;
+
+    border-left:5px solid var(--primary);
+
+    border-radius:8px;
+
+    font-size:16px;
+
+    color:var(--text);
+
+}
+
+/*==============================*/
+/* Bottom */
+/*==============================*/
+
+.bottom{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    padding:18px 24px;
+
+}
+
+.fee{
+
+    flex:1;
+
+}
+
+.fee h2{
+
+    color:var(--primaryDark);
+
+    font-size:24px;
+
+    margin-bottom:10px;
+
+}
+
+.fee h1{
+
+    font-size:48px;
+
+    font-weight:800;
+
+    color:var(--accent);
+
+}
+
+/* Hide consultation fee easily */
+
+.fee[hidden]{
+
+    display:none;
+
+}
+
+/*==============================*/
+
+.qr{
+
+    text-align:center;
+
+}
+
+.qr img{
+
+    width:145px;
+
+    border-radius:12px;
+
+    border:2px solid #e6e6e6;
+
+    padding:8px;
+
+    background:white;
+
+}
+
+.qr p{
+
+    margin-top:8px;
+
+    color:var(--muted);
+
+    font-size:14px;
+
+}
+
+/*==============================*/
+
+.footer{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    background:#fafafa;
+
+    border-top:1px solid var(--border);
+
+    padding:10px;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+}
+
+.footer b{
+
+    color:var(--primaryDark);
+
+}
+
+.footer-logo{
+
+    width:28px;
+
+    height:28px;
+
+    object-fit:contain;
+
+}
+/*==============================*/
+/* PRINT */
+/*==============================*/
+
+@media print{
+
+    body{
+
+        background:white;
+
+        padding:0;
+
+    }
+
+    .placard{
+
+        box-shadow:none;
+
+        border:1px solid #ccc;
+
+        width:100%;
+
+        max-width:none;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="placard">
+
+    <!-- HEADER -->
+    <div class="top-strip"></div>
+    <div class="header">
+
+        <img
+        class="logo"
+        src="{{ url_for('static', filename='image/Prescription_footer.jpg') }}"
+        alt="Doctopal">
+
+        <h1>
+            Dr. {{doctor_data.firstname}} {{doctor_data.lastname}}
+        </h1>
+
+        <h2>
+            {{doctor_data.expertise}}
+        </h2>
+
+        <h3>
+            {{doctor_data.qualifications}}
+        </h3>
+
+    </div>
+
+    <!-- CLINIC DETAILS -->
+
+     {% macro initials(name) -%}
+        {%- if not name -%}
+          {{ "" }}
+        {%- else -%}
+          {%- set parts = name.strip().split() -%}
+          {%- if parts|length == 1 -%}
+            {{ parts[0][:2].upper() }}
+          {%- else -%}
+            {{ (parts[0][0] + parts[1][0]).upper() }}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endmacro %}
+
+    <div class="section">
+
+        <div class="section-title">
+
+            {{clinic_data.clinicname}}
+
+
+        </div>
+
+        <div class="address">
+
+{{clinic_address}}
+
+        </div>
+
+        <div class="contact">
+
+            <div>
+
+                ☎ {{clinic_data.primary_contact_number}}
+
+            </div>
+
+            <div>
+
+                ✉ {{clinic_data.email}}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CONSULTATION HOURS -->
+
+    <div class="section">
+
+        <div class="section-title">
+
+            Consultation Hours
+
+        </div>
+
+        <div class="schedule">
+
+            {% for line in visit_schedule.split('.') %}
+                {% if line.strip() %}
+                    <div>{{ line
+                                |replace("["," ")
+                                |replace("]"," ")
+                                |replace("'"," ")
+                                |upper
+                            }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- BOTTOM -->
+
+    <div class="bottom">
+
+        <div class="fee">
+
+            <h2>
+
+                Consultation Fee
+
+            </h2>
+
+            <h1>
+
+                ₹{{clinic_data.doctor_consultation_fees}}
+
+            </h1>
+
+        </div>
+
+        <div class="qr">
+
+            <img
+            src="{{doctor_data.doctor_qr_uri}}"
+            alt="QR Code">
+
+            <p>
+
+                Scan to visit website,
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+
+        <span>
+            Powered by <b>Doctopal</b>
+        </span>
+
+        <img
+            class="footer-logo"
+            src="{{ url_for('static', filename='image/doctopal_logo_1.jpeg') }}"
+            alt="Doctopal">
+
+    </div>
+    <div class="bottom-strip"></div>
+</div>
+
+</body>
+</html>

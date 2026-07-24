@@ -15,12 +15,114 @@ object-position: center;}
 .nav a{color:#bfe3ff;text-decoration:none;padding:8px;border-radius:8px}
 .main{flex:1;padding:28px}
 .card{background:#fff;padding:18px;border-radius:12px;box-shadow:0 10px 30px rgba(2,52,86,0.06)}
-.avatar{width:120px !important; height:120px !important; overflow:hidden; margin-bottom:12px}
+.avatar{width:120px !important; height:120px !important; overflow:hidden; margin-bottom:12px; flex-shrink:0;}
 .stats{display:flex;gap:12px;margin-top:12px}
 .stat{background:#f7fbff;padding:10px;border-radius:10px;flex:1}
 .clinic{margin-top:10px;padding:12px;background:#fff;border-radius:10px;border:1px solid rgba(5,80,140,0.04)}
 footer{margin-top:18px;color:var(--muted);font-size:13px}
-@media(max-width:900px){.layout{flex-direction:column}.sidebar{width:100%;flex-direction:row;overflow:auto}}
+
+.clinic-actions{
+    display:flex;
+    gap:12px;
+    margin-top:16px;
+}
+
+.btn{
+    flex:1;
+    text-align:center;
+    padding:10px 14px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:600;
+    transition:.2s;
+}
+
+.btn-call{
+    background:#0b3a66;
+    color:#fff;
+}
+
+.btn-call:hover{
+    background:#082b4b;
+}
+
+.btn-direction{
+    background:#28a745;
+    color:#fff;
+}
+
+.btn-direction:hover{
+    background:#208838;
+}
+
+@media (max-width:900px){
+
+    .layout{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+        padding:16px;
+        display:flex;
+        flex-direction:column;
+        gap:14px;
+    }
+
+    /* Doctor info at top */
+    .sidebar > div:nth-child(1),
+    .sidebar > div:nth-child(2),
+    .sidebar > div:nth-child(3){
+        display:inline-block;
+        vertical-align:top;
+    }
+
+    .logo{
+        width:60px;
+        height:60px;
+    }
+
+    /* Navigation in one row */
+    .nav{
+        display:flex;
+        flex-direction:row;
+        justify-content:space-around;
+        width:100%;
+        margin-top:8px;
+        border-top:1px solid rgba(255,255,255,.15);
+        padding-top:12px;
+    }
+
+    .nav a{
+        padding:6px 10px;
+        text-align:center;
+        flex:1;
+    }
+
+    .main{
+        padding:18px;
+    }
+}
+
+@media (max-width:900px){
+
+    .avatar{
+        width:auto;
+        height:auto;
+        max-width:120px;
+        max-height:120px;
+        flex-shrink:0;
+    }
+
+    .avatar img{
+        width:auto;
+        height:auto;
+        max-width:120px;
+        max-height:120px;
+        object-fit:contain;
+    }
+
+}
 </style>
 </head><body>
 <div class="layout">
@@ -38,7 +140,11 @@ footer{margin-top:18px;color:var(--muted);font-size:13px}
   <main class="main">
     <section id="profile" class="card">
       <div style="display:flex;gap:18px;align-items:center">
-        <div class="avatar"><img src="{{profile_pic_uri}}" alt="avatar" style="width:100%;height:100%;object-fit:cover;aspect-ratio:1/1;display: block;"></div>
+        <div class="avatar">
+          <img src="{{profile_pic_uri}}"
+              alt="avatar"
+              style="width:100%;height:100%;object-fit:cover;aspect-ratio:1/1;display:block;">
+      </div>
         <div>
           <h2 style="margin:0">Dr {{doctor_data.firstname}} {{doctor_data.lastname}}</h2>
           <div style="color:var(--muted)">{{doctor_data.expertise}}</div>
@@ -61,6 +167,19 @@ footer{margin-top:18px;color:var(--muted);font-size:13px}
         <div style="color:var(--muted)"><strong>Visit Days:</strong> {{ clinic.visit_schedule }}</div>
         <div style="color:var(--muted)"><strong>Address:</strong> {{ clinic.clinic_address }}</div>
         <div style="color:var(--muted)"><strong>Contact:</strong> {{ clinic.primary_contact_number }} / {{clinic.secondary_contact_number}}</div>
+        
+        <div class="clinic-actions">
+            <a href="tel:{{clinic.primary_contact_number}}" class="btn btn-call">
+                📞 Call
+            </a>
+
+            <a href="https://www.google.com/maps/search/?api=1&query={{ clinic.clinicname|urlencode }},{{ clinic.clinic_address|urlencode }}"
+              target="_blank"
+              class="btn btn-direction">
+                📍 Directions
+            </a>
+        </div>
+      
       </div>
       {% endfor %}
     </section>

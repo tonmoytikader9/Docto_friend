@@ -19,13 +19,13 @@
 
 
   /* Base page sizing */
-  @page { size: A4; margin: 0; } /* adjust margin as needed */
+  @page { size:A4 !important; } /* adjust margin as needed */
   html, body { height: 297mm; margin: 0; padding: 0; -webkit-print-color-adjust: exact; }
 
   /* Container sized to A4 minus margins */
   .container {
         width: 190mm;
-        height: 277mm;     /* fixed page height */
+        height: 280mm;     /* fixed page height */
         box-sizing: border-box;
 
         display: flex;
@@ -174,7 +174,7 @@
     .col-right { padding:14px; box-sizing:border-box; }
 
     .upper-left{ grid-column:1 / 2; grid-row:1 / 2; flex-direction:column; gap:8px; font-size:13px; color:var(--muted); border-bottom:1px solid #111;}
-    .upper-right{ grid-column:2 / 3; grid-row:1 / 2; display:flex; align-items:center; padding-left:18px; font-size:14px; font-weight:600; color:#111; border-bottom:1px solid #111; }
+    .upper-right{ grid-column:2 / 3; grid-row:1 / 2; display:flex; flex-direction: row; align-items:left; padding-left:18px; font-size:14px; color:#111; border-bottom:1px solid #111; }
     .lower-left{
         display:flex;
         flex-direction:column;
@@ -262,6 +262,7 @@
     table.rx th{ background:#fafbfc; color:var(--muted); font-weight:700; font-size:11px; }
     .footer-left{
         display:flex;
+        flex-direction: column;
         justify-content:center;
         align-items:center;
         border-right:2px solid #000;
@@ -274,17 +275,18 @@
     }
 
     .qr{
-        width:120px;
-        height:120px;
+        width:80px;
+        height:80px;
         overflow:hidden;
 
         background:#f3f3f3;
         display:flex;
+        flex-direction: column;
         align-items:center;
         justify-content:center;
 
         color:var(--muted);
-        font-size:12px;
+        font-size:10px;
 
         border-radius:6px;
         border:1px solid var(--inner-border);
@@ -309,6 +311,9 @@
     @media print{
       .container{ box-shadow:none; border:none; width:100%; margin:0; min-height:auto; }
     }
+
+
+
   </style>
   <style>
     /* smaller, compact clinic list inside footer */
@@ -373,6 +378,8 @@
             <div class="patient-field" ><strong>Address: </strong><span id="patient-address">{{patient_data.patient_address}}</span></div>
             <div class="patient-field"><strong>Weight: </strong> <div id="patient-weight">{{patient_data.patient_weight}} kg</div>, <strong>Temp: </strong> <div id="v-temp">{{patient_data.patient_temp}}°C </div></div>
             <div class="patient-field"><strong>BP: </strong> <div id="patient-bp">{{patient_data.patient_BP}} mmHg</div>, <strong>Pulse: </strong> <div id="patient-weight">{{patient_data.patient_pulse}} /min</div></div>
+            <div class="patient-field"><strong>Follow-up time:</strong> <span id="followup" style="display:block;">{{patient_data.patient_follow_up}}</span></div>
+            
         </div>
 
     </div>
@@ -382,14 +389,13 @@
     <div class="row body" role="main" aria-label="Prescription body" id="row-body">
         <div class="body-grid" role="grid" id="body-grid">
             <!-- upper-left -->
-            <div class="upper-left col-left" aria-label="Short notes / flags">
-            <div><strong>Visit Reason:</strong> <span id="visit-reason">{{patient_data.patient_CO}}</span></div>
-            <div><strong>Follow-up:</strong> <span id="followup">{{patient_data.patient_follow_up}}</span></div>
+            <div class="upper-left col-left" aria-label="Short notes / flags"><strong>C/O:</strong>
+            <div> <span id="visit-reason" style="font-size:16px; white-space: pre-line;">{{patient_data.patient_CO}}</span></div>
             </div>
 
             <!-- upper-right -->
-            <div class="upper-right col-right" aria-label="Quick summary">
-            <div id="provisional-diagnosis" style="font-size:16px;">On Examination Diagnosis: {{patient_data.patient_OE}}</div>
+            <div class="upper-right col-right" aria-label="Quick summary"><div><strong>O/E:</strong></div>
+            <div id="provisional-diagnosis" style="font-size:16px; white-space: pre-line; margin-left:10px ;"> {{patient_data.patient_OE}}</div>
             </div>
 
             <!-- lower-left -->
@@ -441,7 +447,6 @@
 
             <div style="margin-top:12px;font-size:13px;color:var(--muted);">
                 <div style="margin-bottom:6px;"><strong>Advice:</strong> <span id="advice">{{patient_data.advice}}</span></div>
-                <div><strong>Notes:</strong> <span id="notes">Keep medicines out of reach of children.</span></div>
             </div>
             </div>
         </div>
@@ -449,19 +454,23 @@
 
     <!-- Row 4: Footer with QR on left and info on right -->
     <div class="row footer" role="contentinfo" aria-label="Footer" id="row-footer">
+    
     <div class="footer-left" aria-label="QR code">
         <div class="qr" id="qr-demo">
-<img
-    src="{{ doctor_data.doctor_qr_uri }}"
-    alt="QR"
-    width="120"
-    height="120">
-</div>
+            <img
+                src="{{ doctor_data.doctor_qr_uri }}"
+                alt="QR"
+                width="120"
+                height="120">
+        </div>
+        <div class="qr-label"><strong style="font-size:10px;">Scan to visit my website .</strong></div>
+        
     </div>
-    <div class="footer-right" aria-label="Footer information">
 
-        <div aria-label="Other clinics" style="margin-top:8px;">
-        <strong style="font-size:12px;">Scan QR Code to visit my website .</strong></br>
+
+    <div class="footer-right" aria-label="Footer information">
+        <div style="font-size:12px;"><strong>Notes:</strong> <span id="notes">In case of emergency contact the nearest hospital.</span></div>
+        <div aria-label="Other clinics" >
         <strong style="font-size:12px;">Clinics Affiliations:</strong>
         <ul id="other-clinics">
             {% for c in doctor_affiliation %}
@@ -474,7 +483,7 @@
         </div>
 
 
-        <div class="sign" id="footer-sign">Dr. {{doctor_data.firstname}} {{doctor_data.lastname}} — Regd No: {{doctor_data.license}}</div>
+        <div class="sign" id="footer-sign" style="font-size:12px;">Dr. {{doctor_data.firstname}} {{doctor_data.lastname}} — Regd No: {{doctor_data.license}}</div>
     </div>
     </div>
     

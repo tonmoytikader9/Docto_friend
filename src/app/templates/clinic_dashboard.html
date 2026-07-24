@@ -111,6 +111,11 @@
               <p><div class="chip">Clinic ID: {{clinic_data.clinic_id}} , Registered: {{clinic_data.created_at}} </div></p>
               <div class="actions">
                 <a class="btn" href="/new-patient-form?doctor_id={{doctor_data.doctor_id}}&clinic_id={{clinic_data.clinic_id}}" target="_blank">Diagnose Patient</a>
+                <a class="btn ghost"
+                  href="/download_placard/{{doctor_data.doctor_id}}/{{clinic_data.clinic_id}}"
+                  target="_blank">
+                  Download Placard
+                </a>
               </div>
             </div>
           </div>

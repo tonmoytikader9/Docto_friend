@@ -157,7 +157,34 @@
       background: #d32f2f;
     }
 
+    #clinicMap{
+    width:100%;
+    height:450px;
+    border-radius:10px;
+    margin-top:12px;
+    border:1px solid #ccc;
+}
+
+.location-box{
+    margin-top:20px;
+}
+
+.coord-row{
+    display:flex;
+    gap:12px;
+    margin-top:12px;
+}
+
+.coord-row input{
+    background:#f7f7f7;
+}
+
   </style>
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+    <link rel="stylesheet"
+    href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
 </head>
 
 <body>
@@ -206,6 +233,43 @@
           <div style="flex:1"><label>State</label><input type="text" name="state" required></div>
           <div style="flex:1"><label>Country</label><input type="text" name="country" required></div>
         </div>
+
+        <!--- <h3 style="color:var(--primary);">Clinic Location</h3>
+
+        <div class="location-box">
+
+            <p>
+                Search for the clinic or click anywhere on the map.
+                You can also drag the marker.
+            </p>
+
+            <div id="clinicMap"></div>
+
+            <div class="coord-row">
+
+                <div style="flex:1;">
+                    <label>Latitude</label>
+                    <input
+                        type="text"
+                        id="latitude"
+                        name="latitude"
+                        readonly
+                        required>
+                </div>
+
+                <div style="flex:1;">
+                    <label>Longitude</label>
+                    <input
+                        type="text"
+                        id="longitude"
+                        name="longitude"
+                        readonly
+                        required>
+                </div>
+
+            </div>
+
+        </div> --->
         
         <div style="display:flex; gap:12px;">
           <div style="flex:1"><label>Contact Number</label><input type="tel" name="clinicContact" id="clinicContact" required></div>
@@ -469,7 +533,113 @@
       </script>
 
   </div>
+  <!--- 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script>
+        //----------------------------------------------------
+// Leaflet Map
+//----------------------------------------------------
+
+const map = L.map("clinicMap").setView([22.5726,88.3639],13);
+
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        maxZoom:19,
+        attribution:"© OpenStreetMap contributors"
+    }
+).addTo(map);
+
+
+//----------------------------------------------------
+// Marker
+//----------------------------------------------------
+
+let marker = L.marker(
+    [22.5726,88.3639],
+    {
+        draggable:true
+    }
+).addTo(map);
+
+
+//----------------------------------------------------
+// Update Inputs
+//----------------------------------------------------
+
+function updateCoordinates(lat,lng){
+
+    document.getElementById("latitude").value=lat.toFixed(6);
+
+    document.getElementById("longitude").value=lng.toFixed(6);
+
+}
+
+updateCoordinates(22.5726,88.3639);
+
+
+//----------------------------------------------------
+// Drag Marker
+//----------------------------------------------------
+
+marker.on("dragend",function(){
+
+    let p=marker.getLatLng();
+
+    updateCoordinates(
+        p.lat,
+        p.lng
+    );
+
+});
+
+
+//----------------------------------------------------
+// Click Map
+//----------------------------------------------------
+
+map.on("click",function(e){
+
+    marker.setLatLng(e.latlng);
+
+    updateCoordinates(
+        e.latlng.lat,
+        e.latlng.lng
+    );
+
+});
+
+
+//----------------------------------------------------
+// Search Bar
+//----------------------------------------------------
+
+L.Control.geocoder({
+
+    defaultMarkGeocode:false
+
+})
+
+.on("markgeocode",function(e){
+
+    let center=e.geocode.center;
+
+    map.setView(center,17);
+
+    marker.setLatLng(center);
+
+    updateCoordinates(
+        center.lat,
+        center.lng
+    );
+
+})
+
+.addTo(map);
+    
+  </script>-->
 
 
 </body>

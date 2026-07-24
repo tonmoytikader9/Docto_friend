@@ -449,6 +449,22 @@ def new_patient():
     
     return render_template("update_patient.html",doctor_data=doctor_data,patient=patient,clinic_data=clinic_data,clinic_address=clinic_address) 
 
+
+@bp.route("/download_placard/<doctor_id>/<clinic_id>")
+def download_placard(doctor_id, clinic_id):
+
+    doctor = doctor_database_management.get_doctor_by_id(doctor_id)
+    clinic = clinic_database_management.get_clinic_by_clinic_id(clinic_id)
+
+
+    return render_template(
+        "placard.html",
+        doctor_data=doctor,
+        clinic_data=clinic,
+        visit_schedule = dict_to_string(clinic['visit_schedule'],fmt="kv"),
+        clinic_address=dict_to_string(clinic['clinic_address'])
+    )
+
 @bp.route("/patient-generate-prescription", methods=["POST"])
 def generate_prescription_patient():
 

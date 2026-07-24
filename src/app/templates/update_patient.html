@@ -831,45 +831,43 @@ function printPrescription() {
     const w = window.open("", "_blank");
 
     w.document.write(`
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
+            <!DOCTYPE html>
+            <html>
+            <head>
+            <meta charset="UTF-8">
 
-<style>
+            <style>
 
-@page{
-    size:A4;
-    margin:10mm;
-}
+            @page{
+                size:A4 !important;
+            }
 
-body{
-    margin:0;
-    padding:0;
-}
+            body{
+                margin:0;
+                padding:0;
+            }
 
-</style>
 
-</head>
+            </head>
 
-<body>
+            <body>
 
-${html}
+            ${html}
 
-<script>
+            <script>
 
-window.onload=function(){
+            window.onload=function(){
 
-    window.print();
+                window.print();
 
-};
+            };
 
-<\/script>
+            <\/script>
 
-</body>
+            </body>
 
-</html>
-`);
+            </html>
+            `);
 
     w.document.close();
 
