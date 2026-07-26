@@ -226,9 +226,10 @@
     /* 2) Fallback: auto-scale text when children would overflow horizontally.
     Wrap content blocks inside .auto-scale (apply to direct children if needed). */
     .lower-right > * { min-width: 0; } /* allow children to shrink */
-    .lower-right table{
+    
+    /*.lower-right table{
         flex-grow:1;
-    }
+    }*/
     .auto-scale {
     display: block;
     width: 100%;
@@ -258,7 +259,7 @@
         font-size:12px;
 
     }
-    table.rx th, table.rx td{ padding:10px 8px; border-bottom:1px solid var(--inner-border); text-align:left; vertical-align:top; }
+    table.rx th, table.rx td{ padding:2px 8px; border-bottom:1px solid var(--inner-border); text-align:left; vertical-align:top; }
     table.rx th{ background:#fafbfc; color:var(--muted); font-weight:700; font-size:11px; }
     .footer-left{
         display:flex;
@@ -431,7 +432,7 @@
                         {% for med in patient_data.medications %}
                         <tr>
                             <td>{{ med.medicine }}<br>
-                                <small style="display:block; color:#555; margin-top:4px;">{{ med.salt_composition }}</small>
+                                <small style="display:block; color:#555;">{{ med.salt_composition }}</small>
                             </td>
                             <td>{{ med.regime }}</td>
                             <td>{{ med.duration }}</td>
@@ -445,8 +446,9 @@
                 </tbody>
             </table>
 
-            <div style="margin-top:12px;font-size:13px;color:var(--muted);">
-                <div style="margin-bottom:6px;" ><strong>Advice:</strong> <span id="advice">{{patient_data.advice}}</span></div>
+
+            <div style="margin-top:12px;font-size:13px;color:var(--muted);" hidden>
+                <div style="margin-bottom:6px;"><strong>Advice:</strong> <span id="advice">{{patient_data.advice}}</span></div>
             </div>
             </div>
         </div>
