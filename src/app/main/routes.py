@@ -143,11 +143,11 @@ else:
 
 FAST2SMS_API_KEY = val.get("FAST2SMS_API_KEY")
 
-week_year = get_iso_week(DATE_TODAY)
+week_year = get_iso_week( datetime.now(IST).date())
 CURRENT_WEEK = week_year["week"]
 CURRENT_YEAR = week_year["year"]
 UPCOMING_WEEK = CURRENT_WEEK+1
-print(f"ROUTE LOG:: Current week = {CURRENT_WEEK}, Upcoming week = {UPCOMING_WEEK}, Today = {DATE_TODAY}------------------------------------------------------------------------------------------------------------")
+print(f"ROUTE LOG:: Current week = {CURRENT_WEEK}, Upcoming week = {UPCOMING_WEEK}, Today = { datetime.now(IST).date()}------------------------------------------------------------------------------------------------------------")
 
 @bp.route("/", methods=["GET"])
 def doctor_login_page():
@@ -492,7 +492,7 @@ def generate_prescription_patient():
         clinics_list_processed.append(doctor_affiliation)
     
     print(f"ROUTE LOG : Printing from /patient-generate-prescription generated schedule : {visit_schedule} . address : {clinic_address}, doctor_affiliation : {clinics_list_processed}")
-    html = render_template("doctor_prescription.html",patient_data=data,doctor_data=doctor_data,clinic_data=clinic_data,visit_schedule=visit_schedule,clinic_address=clinic_address,prescription_date=str(DATE_TODAY),doctor_affiliation=clinics_list_processed) 
+    html = render_template("doctor_prescription.html",patient_data=data,doctor_data=doctor_data,clinic_data=clinic_data,visit_schedule=visit_schedule,clinic_address=clinic_address,prescription_date=str( datetime.now(IST).date()),doctor_affiliation=clinics_list_processed) 
 
     return jsonify({
         'status': 'ok',
@@ -565,7 +565,7 @@ def doc_dashboard(doctor_id):
         profile_pic_uri = None
     
     appointments_upcoming_week = patient_database_management.get_patient_count_for_week(doctor_id=doctor_id,week=str(UPCOMING_WEEK))
-    appointments_today = patient_database_management.get_patient_count_for_visit_date(doctor_id=doctor_id,date=str(DATE_TODAY))
+    appointments_today = patient_database_management.get_patient_count_for_visit_date(doctor_id=doctor_id,date=str( datetime.now(IST).date()))
     appointments_current_week = patient_database_management.get_patient_count_for_week(doctor_id=doctor_id,week=str(CURRENT_WEEK))
 
     return render_template(
