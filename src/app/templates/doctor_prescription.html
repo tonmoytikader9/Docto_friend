@@ -344,19 +344,19 @@
         <div class="header-left" aria-label="Doctor details"> 
             <div class="avatar" id="doctor-avatar"><img src="{{ clinic_data.clinic_picture}}" alt="Logo" onerror="this.onerror=null; this.src='{{url_for('static', filename='image/Prescription_footer.jpg') }}';" style="width:56px;height:56px;border-radius:10px;object-fit:cover;"></div>
             <div class="doc-info">
-            <h2 id="doctor-name">Dr. {{doctor_data.firstname}} {{doctor_data.lastname}}</h2>
-            <p id="doctor-qual">{{doctor_data.qualifications}}</p>
-            <p id="doctor-expt">{{doctor_data.expertise}}</p>
-            <p id="doctor-fellowship" style="margin-top:6px;">{{doctor_data.practising_or_fellowship | replace('\n', '<br>') | safe }}</p>
+            <h2 id="doctor-name" style="color: #05305c;">Dr. {{doctor_data.firstname}} {{doctor_data.lastname}}</h2>
+            <p id="doctor-qual" style="color: #046cd3;">{{doctor_data.qualifications}}</p>
+            <p id="doctor-fellowship" style="margin-top:6px; ">{{doctor_data.practising_or_fellowship | replace('\n', '<br>') | safe }}</p>
+            <p id="doctor-expt" style="color: #05305c;">{{doctor_data.expertise}}</p>
             <p id="doctor-achievements" style="margin-top:6px;">{{doctor_data.achievements | replace('\n', '<br>') | safe }}</p>
             <p id="doctor-reg" style="margin-top:6px;">Reg No: {{doctor_data.license}}</p>
             </div>
         </div>
 
         <div class="header-right" aria-label="Clinic details">
-            <div class="clinic-name" id="clinic-name">{{clinic_data.clinicname}}</div>
-            <div id="clinic-address">{{clinic_address}}</div>
-            <div style="margin-top:6px;" id="clinic-phone">Phone: {{clinic_data.primary_contact_number}} / {{clinic_data.secondary_contact_number}}</div>
+            <div class="clinic-name" id="clinic-name" style="color: #05305c;">{{clinic_data.clinicname}}</div>
+            <div id="clinic-address" style="color: #046cd3;">{{clinic_address}}</div>
+            <div style="margin-top:6px;" id="clinic-phone" style="color: #046cd3;"><strong style="color: #05305c;">Contact Number:</strong> {{clinic_data.primary_contact_number}} / {{clinic_data.secondary_contact_number}}</div>
             
             <div style="margin-top:10px;font-weight:700;color:#111;" id="presc-title">Visit Timings:</div>
             <div style="margin-top:6px;color:var(--muted);font-size:13px;"><span id="presc-date">{{visit_schedule}}</span></div>
