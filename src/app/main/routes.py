@@ -716,21 +716,33 @@ def search_meds():
 #-------------------------------- >  Helper functions  < ---------------------------------------------------
 
 def dict_to_string(d: dict, fmt: str = "vo") -> str:
-    """
-    Convert dict to string.
-    fmt="kv" -> "KEY1 , Val1 . KEY2 , Val2" (key value pair, in insertion order)
-    fmt="vo" -> "Val1,Val2,Val3"  (values only, in insertion order)
-    """
+    # ""
+    #Convert dict to string.
+    #fmt="kv" -> "KEY1 , Val1 . KEY2 , Val2" (key value pair, in insertion order)
+    #fmt="vo" -> "Val1,Val2,Val3"  (values only, in insertion order)
+    # ""
     if not isinstance(d, dict):
         raise TypeError("d must be a dict")
+
+    day_names = {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+    }
+
     if fmt == "kv":
-        parts = [f"{k} : {v}" for k, v in d.items()]
-        return " . ".join(parts)
+        parts = [f"{day_names.get(k, k)} : {v[0]}" for k, v in d.items()]
+        return " \n ".join(parts)
     elif fmt == "vo":
         vals = [str(v) for v in d.values()]
         return ", ".join(vals)
     else:
         raise ValueError("fmt must be 'kv' or 'vo'")
+
 
 def remove_bytes_from_dict(d: dict) -> dict:
     return {k: v for k, v in d.items() if not isinstance(v, bytes)}
